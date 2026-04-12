@@ -1,0 +1,21 @@
+{
+  "project_name": "InitiaPredict",
+  "track": "AI",
+  "chain_id": "initiapredict-1",
+  "contract_address": "0xcA0a9e2E8c6CAb034a7183fCe1860b498E84F2Bc",
+  "frontend_url": "https://initiapredict.vercel.app",
+  "team": [
+    {
+      "name": "Your Name",
+      "github": "https://github.com/yourusername"
+    }
+  ],
+  "description": "AI-powered prediction market platform built on Initia. Features include CPMM-based binary markets, AI market analyst with streaming chat, AI-assisted market creation, and cross-platform intelligence comparing odds with Polymarket.",
+  "initia_features": [
+    "auto-signing",
+    "interwoven-bridge",
+    "initia-usernames"
+  ],
+  "interwovenkit": true,
+  "demo_video": "https://youtu.be/YOUR_DEMO_VIDEO"
+}

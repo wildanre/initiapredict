@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Build outputs
+frontend/.next/
+frontend/out/
+contracts/out/
+contracts/cache/
+
+# Env files
+.env
+.env.local
+.env.*.local
+frontend/.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Foundry
+contracts/lib/
+
+# Misc
+*.log
