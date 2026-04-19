@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { motion, AnimatePresence } from 'motion/react'
 import { useInterwovenKit } from '@initia/interwovenkit-react'
 import { useAccount } from 'wagmi'
 
@@ -14,14 +15,20 @@ const NETWORK_INFO = {
 }
 
 function CopyField({ label, value }: { label: string; value: string }) {
+  const [copied, setCopied] = useState(false)
+
   return (
-    <div className="flex items-center justify-between py-1.5">
-      <span className="text-zinc-500 text-xs">{label}</span>
+    <div className="flex items-center justify-between py-2.5">
+      <span className="text-[#8b85a0] text-xs">{label}</span>
       <button
-        onClick={() => navigator.clipboard.writeText(value)}
-        className="text-xs font-mono text-zinc-300 bg-zinc-800 px-2 py-0.5 rounded hover:bg-zinc-700 transition"
+        onClick={() => {
+          navigator.clipboard.writeText(value)
+          setCopied(true)
+          setTimeout(() => setCopied(false), 1500)
+        }}
+        className="text-xs font-mono text-[#f0eef6] bg-[#0e0e18] px-3 py-1 rounded-lg border border-[rgba(139,92,246,0.1)] hover:border-[rgba(139,92,246,0.3)] hover:bg-[#12121e] transition-all duration-300"
       >
-        {value.length > 30 ? value.slice(0, 30) + '...' : value}
+        {copied ? 'Copied' : value.length > 28 ? value.slice(0, 28) + '...' : value}
       </button>
     </div>
   )
@@ -64,72 +71,132 @@ export default function NavButtons() {
   return (
     <>
       {!evmConnected ? (
-        <button
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
           onClick={() => setShowNetworkModal(true)}
-          className="px-3 py-1.5 text-emerald-400 border border-emerald-800 rounded-md text-sm font-medium hover:bg-emerald-900/30 transition"
+          className="px-3.5 py-1.5 rounded-xl text-sm font-medium transition-all duration-300"
+          style={{
+            color: '#10b981',
+            border: '1px solid rgba(16, 185, 129, 0.2)',
+            background: 'rgba(16, 185, 129, 0.06)',
+          }}
         >
           Add Network
-        </button>
+        </motion.button>
       ) : (
         <>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={requestFaucet}
             disabled={faucetLoading}
-            className="px-3 py-1.5 text-amber-400 border border-amber-800 rounded-md text-xs font-medium hover:bg-amber-900/30 disabled:opacity-40 transition"
+            className="px-3 py-1.5 rounded-xl text-xs font-medium disabled:opacity-40 transition-all duration-300"
+            style={{
+              color: '#f59e0b',
+              border: '1px solid rgba(245, 158, 11, 0.2)',
+              background: 'rgba(245, 158, 11, 0.06)',
+            }}
             title="Get 100 testnet GAS tokens"
           >
             {faucetLoading ? '...' : faucetMsg || 'Faucet'}
-          </button>
-          <span className="text-xs text-emerald-400 font-mono">
+          </motion.button>
+          <span className="text-xs font-mono px-2.5 py-1 rounded-lg" style={{ color: '#10b981', background: 'rgba(16, 185, 129, 0.08)' }}>
             {evmAddress?.slice(0, 6)}...{evmAddress?.slice(-4)}
           </span>
         </>
       )}
-      <button
+      <motion.button
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
         onClick={() => openBridge()}
-        className="px-3 py-1.5 text-zinc-400 border border-zinc-700 rounded-md text-sm font-medium hover:text-white hover:border-zinc-500 transition"
+        className="px-3.5 py-1.5 rounded-xl text-sm font-medium transition-all duration-300"
+        style={{
+          color: '#8b85a0',
+          border: '1px solid rgba(139, 92, 246, 0.12)',
+          background: 'rgba(139, 92, 246, 0.04)',
+        }}
       >
         Bridge
-      </button>
+      </motion.button>
       {!initiaConnected ? (
-        <button
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
           onClick={openConnect}
-          className="px-4 py-1.5 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-500 transition"
+          className="px-4 py-1.5 rounded-xl text-sm font-semibold text-white transition-all duration-300"
+          style={{
+            background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+            boxShadow: '0 4px 20px rgba(139, 92, 246, 0.25)',
+          }}
         >
           Connect Wallet
-        </button>
+        </motion.button>
       ) : (
-        <button
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
           onClick={openWallet}
-          className="px-4 py-1.5 bg-zinc-800 text-white rounded-md text-sm font-medium hover:bg-zinc-700 border border-zinc-700 transition"
+          className="px-4 py-1.5 rounded-xl text-sm font-medium text-white transition-all duration-300"
+          style={{
+            background: 'rgba(139, 92, 246, 0.12)',
+            border: '1px solid rgba(139, 92, 246, 0.2)',
+          }}
         >
           {username || (initiaAddress ? `${initiaAddress.slice(0, 6)}...${initiaAddress.slice(-4)}` : '')}
-        </button>
+        </motion.button>
       )}
 
       {/* Network Info Modal */}
-      {mounted && showNetworkModal && createPortal(
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.7)' }} onClick={() => setShowNetworkModal(false)}>
-          <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-5 w-[380px] shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <h3 className="font-semibold text-white mb-1">Add InitiaPredict Network</h3>
-            <p className="text-zinc-500 text-xs mb-4">Add this network manually in MetaMask: Settings → Networks → Add Network</p>
-            <div className="space-y-0.5 divide-y divide-zinc-800">
-              <CopyField label="Network Name" value={NETWORK_INFO.name} />
-              <CopyField label="RPC URL" value={NETWORK_INFO.rpc} />
-              <CopyField label="Chain ID" value={NETWORK_INFO.chainId} />
-              <CopyField label="Currency Symbol" value={NETWORK_INFO.symbol} />
-              <CopyField label="Decimals" value={NETWORK_INFO.decimals} />
-            </div>
-            <p className="text-[10px] text-zinc-600 mt-3">Click any value to copy. After adding, switch to the InitiaPredict network in your wallet.</p>
-            <button
+      {mounted && (
+        <AnimatePresence>
+          {showNetworkModal && createPortal(
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}
               onClick={() => setShowNetworkModal(false)}
-              className="mt-4 w-full py-2 bg-zinc-800 text-zinc-300 rounded-md text-sm hover:bg-zinc-700 transition"
             >
-              Done
-            </button>
-          </div>
-        </div>,
-        document.body
+              <motion.div
+                initial={{ scale: 0.9, y: 20, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 0.95, y: 10, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                className="glass-card p-6 w-[400px] shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm mb-4">
+                  iP
+                </div>
+                <h3 className="font-bold text-[#f0eef6] text-lg mb-1">Add InitiaPredict Network</h3>
+                <p className="text-[#8b85a0] text-xs mb-5">Add this EVM network manually in your wallet settings</p>
+                <div className="space-y-0.5 divide-y divide-[rgba(139,92,246,0.08)]">
+                  <CopyField label="Network Name" value={NETWORK_INFO.name} />
+                  <CopyField label="RPC URL" value={NETWORK_INFO.rpc} />
+                  <CopyField label="Chain ID" value={NETWORK_INFO.chainId} />
+                  <CopyField label="Currency Symbol" value={NETWORK_INFO.symbol} />
+                  <CopyField label="Decimals" value={NETWORK_INFO.decimals} />
+                </div>
+                <p className="text-[10px] text-[#4e4868] mt-4">Click any value to copy. After adding, switch to the InitiaPredict network in your wallet.</p>
+                <motion.button
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => setShowNetworkModal(false)}
+                  className="mt-5 w-full py-2.5 rounded-xl text-sm font-medium transition-all duration-300"
+                  style={{
+                    background: 'rgba(139, 92, 246, 0.1)',
+                    border: '1px solid rgba(139, 92, 246, 0.15)',
+                    color: '#f0eef6',
+                  }}
+                >
+                  Done
+                </motion.button>
+              </motion.div>
+            </motion.div>,
+            document.body
+          )}
+        </AnimatePresence>
       )}
     </>
   )

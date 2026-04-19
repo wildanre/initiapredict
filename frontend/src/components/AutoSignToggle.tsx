@@ -2,6 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query'
 import { useInterwovenKit } from '@initia/interwovenkit-react'
+import { motion } from 'motion/react'
 
 const AUTOSIGN_CHAIN_ID = 'initiapredict-1'
 
@@ -24,17 +25,23 @@ function AutoSignToggleInner() {
   const isLoading = autoSign?.isLoading || enable.isPending || disable.isPending
 
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
       onClick={() => (isEnabled ? disable.mutate() : enable.mutate())}
       disabled={isLoading}
-      className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-        isEnabled
-          ? 'bg-green-100 text-green-800 border border-green-300'
-          : 'bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200'
-      } disabled:opacity-50`}
+      className="px-3.5 py-1.5 rounded-xl text-sm font-medium transition-all duration-300 disabled:opacity-40 flex items-center gap-1.5"
+      style={{
+        background: isEnabled ? 'rgba(16, 185, 129, 0.08)' : 'rgba(139, 92, 246, 0.06)',
+        border: isEnabled ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(139, 92, 246, 0.12)',
+        color: isEnabled ? '#10b981' : '#8b85a0',
+      }}
     >
-      {isLoading ? '...' : isEnabled ? '⚡ Auto-Sign ON' : '⚡ Enable Auto-Sign'}
-    </button>
+      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+      {isLoading ? '...' : isEnabled ? 'Auto-Sign ON' : 'Enable Auto-Sign'}
+    </motion.button>
   )
 }
 
